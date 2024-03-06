@@ -1,7 +1,9 @@
+import Sidebar from "@/components/Sidebar";
+
 export default function Home() {
   return (
-    <div className="font-bold">
-      Tell Time
-    </div>
+    <>
+      <Sidebar/>
+    </>
   )
 }

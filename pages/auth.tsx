@@ -1,4 +1,5 @@
 import Input from '@/components/Input'
+import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react'
 
 const auth = () => {
@@ -14,6 +15,12 @@ const auth = () => {
         setVariant((current) => current === 'login' ? 'register' : 'login');
     }, []);
 
+    const router = useRouter();
+
+    const redirect = () => {
+        router.push('/');
+    }
+
   return (
     <div className="relative h-full bg-[url('/images/auth-bg.jpg')] bg-no-repeat bg-center bg-fixed bg-cover">
         <div className='bg-black bg-opacity-30 w-full h-full'>
@@ -21,7 +28,7 @@ const auth = () => {
                 <img src='/images/logo.png' alt='logo' className='h-12'></img>
             </nav>
             <div className='flex justify-center'>
-                <form className='bg-sec_bg bg-opacity-60 px-16 py-16 self-center mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full'>
+                <div className='bg-sec_bg bg-opacity-60 px-16 py-16 self-center mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full'>
                     <h2 className='text-white text-4xl mb-8 font-semibold'>
                         {variant === 'login' ? 'Login' : 'Register'}
                     </h2>
@@ -48,7 +55,7 @@ const auth = () => {
                             value={password}
                         />
                     </div>
-                    <button type='submit' className='bg-bg py-3 text-white rounded-md w-full mt-10 hover:bg-bg-darker transition'>
+                    <button onClick={redirect} type='submit' className='bg-bg py-3 text-white rounded-md w-full mt-10 hover:bg-bg-darker transition'>
                         {variant === 'login' ? 'Login' : 'Sign Up'}
                     </button>
                     <p  onClick={toggleVariant} className='text-neutral-700 mt-12'>
@@ -57,7 +64,7 @@ const auth = () => {
                             {variant === 'login' ? 'Create an Account' : 'Login'}
                         </span> 
                     </p>
-                </form>  
+                </div>  
             </div>
         </div>
     </div>

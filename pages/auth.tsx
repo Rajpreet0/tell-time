@@ -1,25 +1,49 @@
 import Input from '@/components/Input'
 import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react'
+import { signIn } from 'next-auth/react';
+import axios from 'axios';
 
 const auth = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const [username, setUsername] = useState('');
-
+    const [name, setName] = useState('');
     const [variant, setVariant] = useState('login');
+    
+    const router = useRouter();
 
     const toggleVariant = useCallback(() => {
         setVariant((current) => current === 'login' ? 'register' : 'login');
     }, []);
 
-    const router = useRouter();
+    const login = useCallback(async () => {
+        try {   
+            await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+                callbackUrl: '/'
+            });
 
-    const redirect = () => {
-        router.push('/');
-    }
+            router.push('/');
+        }catch (error) {
+            console.log(error);
+        }
+    }, [email, password]);
+
+    const register = useCallback(async () => {
+        try{
+            await axios.post('/api/register', {
+                email,
+                name,
+                password
+            });
+           // login();
+        }catch (error) {
+            console.log(error);
+        }
+    }, [email, name, password]);
 
   return (
     <div className="relative h-full bg-[url('/images/auth-bg.jpg')] bg-no-repeat bg-center bg-fixed bg-cover">
@@ -36,9 +60,9 @@ const auth = () => {
                        {variant === 'register' && ( 
                             <Input
                                 label='Username'
-                                onChange={(e: any) => setUsername(e.target.value)}
+                                onChange={(e: any) => setName(e.target.value)}
                                 id='username'
-                                value={username}
+                                value={name}
                             />
                         )}
                         <Input
@@ -55,7 +79,7 @@ const auth = () => {
                             value={password}
                         />
                     </div>
-                    <button onClick={redirect} type='submit' className='bg-bg py-3 text-white rounded-md w-full mt-10 hover:bg-bg-darker transition'>
+                    <button onClick={variant === 'login' ? login : register} type='submit' className='bg-bg py-3 text-white rounded-md w-full mt-10 hover:bg-bg-darker transition'>
                         {variant === 'login' ? 'Login' : 'Sign Up'}
                     </button>
                     <p  onClick={toggleVariant} className='text-neutral-700 mt-12'>

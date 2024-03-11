@@ -3,6 +3,26 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react'
 import { signIn } from 'next-auth/react';
 import axios from 'axios';
+import { GetServerSidePropsContext } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const session = await getServerSession(context.req, context.res, authOptions);
+
+    if(session) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+}
 
 const auth = () => {
 
@@ -39,7 +59,7 @@ const auth = () => {
                 name,
                 password
             });
-           // login();
+            login();
         }catch (error) {
             console.log(error);
         }
